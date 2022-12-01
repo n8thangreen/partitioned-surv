@@ -2,19 +2,27 @@
 
 # example data from flexsurv package
 
+library(flexsurv)
+
 ovarian$futime2 <- ovarian$futime + 100
 
 fit.pfs <- flexsurvreg(formula = Surv(futime, fustat) ~ 1,
-                       data = ovarian, dist = "weibull")
+                       data = ovarian, dist = "exp")
 
 fit.os <- flexsurvreg(formula = Surv(futime2, fustat) ~ 1,
-                      data = ovarian, dist = "weibull")
+                      data = ovarian, dist = "exp")
 
 ps_res <- partition_surv(fit.pfs, fit.os)
 
 matplot(ps_res, type = "l", lty = 1)
 
 save(ps_res, file = "data/ps_res.RData")
+
+
+pfs.surv <- summary(fit.pfs, ci = FALSE)[[1]]$est
+
+library(survHE)
+blendR::make_surv(fit.pfs, t = summary(fit.pfs, ci = FALSE)[[1]]$time)
 
 # mean Costs and QALYs per cycle
 

@@ -4,12 +4,12 @@
 \alias{partition_surv}
 \title{Fit a partitioned survival model}
 \usage{
-partition_surv(fit.pfs, fit.os, title = "trt", time = times)
+partition_surv(fit_pfs, fit_os, time = NULL, ...)
 }
 \arguments{
-\item{fit.pfs}{flexsurv obj fitting pfs}
+\item{fit_pfs}{flexsurvreg obj fitting pfs}
 
-\item{fit.os}{flexsurv obj fitting os}
+\item{fit_os}{flexsurvreg obj fitting os}
 
 \item{time}{numeric vector of time to estimate probabilities}
 }
