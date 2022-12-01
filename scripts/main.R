@@ -1,5 +1,4 @@
 
-
 # example data from flexsurv package
 
 ovarian$futime2 <- ovarian$futime + 100
@@ -16,7 +15,7 @@ matplot(ps_res, type = "l", lty = 1)
 
 save(ps_res, file = "data/ps_res.RData")
 
-# mean Costs and QALYs per cycle
+# mean costs and QALYs per cycle
 
 c_S <- 
 c_P <- 
@@ -36,12 +35,9 @@ qalys <- ps_res %*% c(u_S, u_P, u_D)
 d <- 0.035
 disc <- 1/(1 + d)^times
 
-v.tc.d <-  t(costs) %*% disc
-v.te.d <-  t(qalys) %*% disc
+c_total <-  t(costs) %*% disc
+q_total <-  t(qalys) %*% disc
 
-ce_res <- data.frame("Total Discounted Cost" = v.tc.d, 
-                     "Total Discounted QALYs" = v.te.d, 
-                     check.names = FALSE)
-kable(results)
+ce_res <- c(c_total, q_total)
 
 save(pce_res, file = "data/pce_res.RData")
