@@ -1,5 +1,4 @@
 
-
 # example data from flexsurv package
 
 library(flexsurv)
@@ -44,12 +43,9 @@ qalys <- ps_res %*% c(u_S, u_P, u_D)
 d <- 0.035
 disc <- 1/(1 + d)^times
 
-v.tc.d <-  t(costs) %*% disc
-v.te.d <-  t(qalys) %*% disc
+c_total <-  t(costs) %*% disc
+q_total <-  t(qalys) %*% disc
 
-ce_res <- data.frame("Total Discounted Cost" = v.tc.d, 
-                     "Total Discounted QALYs" = v.te.d, 
-                     check.names = FALSE)
-kable(results)
+ce_res <- c(c_total, q_total)
 
 save(pce_res, file = "data/pce_res.RData")
