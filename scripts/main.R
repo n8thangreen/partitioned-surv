@@ -17,11 +17,11 @@ matplot(ps_res, type = "l", lty = 1)
 
 save(ps_res, file = "data/ps_res.RData")
 
-
-pfs.surv <- summary(fit.pfs, ci = FALSE)[[1]]$est
-
-library(survHE)
-blendR::make_surv(fit.pfs, t = summary(fit.pfs, ci = FALSE)[[1]]$time)
+## check
+# pfs.surv <- summary(fit.pfs, ci = FALSE)[[1]]$est
+# 
+# library(survHE)
+# blendR::make_surv(fit.pfs, t = summary(fit.pfs, ci = FALSE)[[1]]$time)
 
 # mean Costs and QALYs per cycle
 
