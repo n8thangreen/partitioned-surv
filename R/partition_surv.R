@@ -7,8 +7,7 @@
 #' 
 #' @param ... Fitted flexsurvreg obj
 #' @param time numeric vector of time to estimate probabilities
-#' @return list w/ one entry of a data frame w/ probabilities
-#'    associated w/ stable ,prog and dead.
+#' @return data frame of times and probabilities for each state
 #' 
 #' @importFrom blendR make_surv
 #' @export
