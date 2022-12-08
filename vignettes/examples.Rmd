@@ -1,9 +1,36 @@
+---
+title: "examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
-# example 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
+```{r setup}
+library(partitionedsurv)
+```
 
-dat <- read.delim(file = "raw-data/bltper_1x1.txt", sep = "")
+```{r eval=FALSE}
 
+# example data from flexsurv package
+
+library(flexsurv)
+
+ovarian$futime2 <- ovarian$futime + 100
+
+fit.pfs <- flexsurvreg(formula = Surv(futime, fustat) ~ 1,
+                       data = ovarian, dist = "exp")
+
+fit.os <- flexsurvreg(formula = Surv(futime2, fustat) ~ 1,
+                      data = ovarian, dist = "exp")
 
 ps_res <- partition_surv(fit.pfs, fit.os)
 
@@ -43,3 +70,4 @@ q_total <-  t(qalys) %*% disc
 ce_res <- c(c_total, q_total)
 
 save(pce_res, file = "data/pce_res.RData")
+```
