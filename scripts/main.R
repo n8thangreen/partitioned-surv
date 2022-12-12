@@ -1,11 +1,40 @@
 
 # example 
+# from Williams (2016, 2017)
 
 
+# life table
 dat <- read.delim(file = "raw-data/bltper_1x1.txt", sep = "")
 
 
-ps_res <- partition_surv(fit.pfs, fit.os)
+# progression-free survival
+n_sample <- 10
+log_scale <- rnorm(n_sample, mean = 1.237, sd = 0.06)
+log_shape <- rnorm(n_sample, mean = 0.310, sd = 0.051)
+
+surv <- list()
+
+for (i in 1:n_sample) {
+  surv[[i]] <- pweibull(q = seq(0,10,0.1),
+                        shape = exp(log_shape[i]),
+                        scale = exp(log_scale[i]),
+                        lower.tail = FALSE)
+}
+
+pfs <- do.call(cbind, surv)
+
+
+## how to determine the overall survival?
+## e.g. take the curve from the paper (2010?) and adjust life table
+## for a hazard ratio/ratio RMST and then use this for future curves?
+
+## what cohort age distribution?
+## do the weighted average like in MCM analysis?
+
+
+#
+ps_res <- partition_surv(pfs, os)
+
 
 matplot(ps_res, type = "l", lty = 1)
 

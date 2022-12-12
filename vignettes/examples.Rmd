@@ -1,5 +1,5 @@
 ---
-title: "examples"
+title: "Example analysis"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{examples}
@@ -16,13 +16,15 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(partitionedsurv)
+library(flexsurv)
 ```
+
+## Partitioned survival model
 
 ```{r eval=FALSE}
 
 # example data from flexsurv package
 
-library(flexsurv)
 
 ovarian$futime2 <- ovarian$futime + 100
 
@@ -37,13 +39,12 @@ ps_res <- partition_surv(fit.pfs, fit.os)
 matplot(ps_res, type = "l", lty = 1)
 
 save(ps_res, file = "data/ps_res.RData")
+```
 
-## check
-# pfs.surv <- summary(fit.pfs, ci = FALSE)[[1]]$est
-# 
-# library(survHE)
-# blendR::make_surv(fit.pfs, t = summary(fit.pfs, ci = FALSE)[[1]]$time)
 
+## Cost-effectiveness analysis
+
+```{r}
 # mean Costs and QALYs per cycle
 
 c_S <- 
