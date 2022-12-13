@@ -34,6 +34,8 @@ partition_surv <- function(...,
   ##TODO:
   # constrain positive?
   
+  time <- if (is.null(time)) 0:(ncol(prob) - 1) else time
+  
   data.frame(time = time,
              t(prob))
 }

@@ -2,12 +2,22 @@
 # example 
 # from Williams (2016, 2017)
 
+library(dplyr)
 
-# life table
+
+# overall survival
+# using life tables
+
 dat <- read.delim(file = "raw-data/bltper_1x1.txt", sep = "")
+
+os <- 
+  dat |> filter(Year == 2020) |>
+  mutate(s = lx/100000) |> 
+  pull()
 
 
 # progression-free survival
+
 n_sample <- 10
 log_scale <- rnorm(n_sample, mean = 1.237, sd = 0.06)
 log_shape <- rnorm(n_sample, mean = 0.310, sd = 0.051)
@@ -23,6 +33,16 @@ for (i in 1:n_sample) {
 
 pfs <- do.call(cbind, surv)
 
+# to test
+pfs <- rowMeans(pfs)
+
+os <- os[1:101]
+os[101] <- pfs[101]
+
+#
+plot(os, type = "l", col = "red")
+lines(pfs, type = "l", col = "blue")
+
 
 ## how to determine the overall survival?
 ## e.g. take the curve from the paper (2010?) and adjust life table
@@ -33,10 +53,10 @@ pfs <- do.call(cbind, surv)
 
 
 #
-ps_res <- partition_surv(pfs, os)
+ps_res <- partition_surv(os, pfs)
 
 
-matplot(ps_res, type = "l", lty = 1)
+matplot(ps_res$time, ps_res[,-1], type = "l", lty = 1, ylab = "probability")
 
 save(ps_res, file = "data/ps_res.RData")
 
