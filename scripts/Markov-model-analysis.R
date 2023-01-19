@@ -73,6 +73,7 @@ qalys <- matrix(NA, nrow = n_trials, ncol = n_treatments,
 for (i in 1:n_trials) {
   ce_res <- ce_markov(start_pop = c(n_cohort, 0, 0),
                       n_treat = 2,
+                      p_mortality_williams,
                       state_c_matrix(),
                       trans_c_matrix(),
                       state_q_matrix())

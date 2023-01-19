@@ -2,6 +2,7 @@
 #'
 ce_markov <- function(start_pop,
                       n_treat,
+                      p_mortality,
                       state_c_matrix,
                       trans_c_matrix,
                       state_q_matrix,
@@ -52,6 +53,7 @@ ce_markov <- function(start_pop,
       # pass in functions for random sample
       # rather than fixed values
       p_matrix <- p_matrix_cycle(age, j - 1,
+                                 p_mortality,
                                  tpProg = tpProg(),
                                  tpDcm = tpDcm(),
                                  effect = effect())
