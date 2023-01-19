@@ -1,7 +1,7 @@
 
 #'
 ce_markov <- function(start_pop,
-                      p_matrix,
+                      n_treat,
                       state_c_matrix,
                       trans_c_matrix,
                       state_q_matrix,
@@ -51,7 +51,7 @@ ce_markov <- function(start_pop,
       # difference from point estimate case
       # pass in functions for random sample
       # rather than fixed values
-      p_matrix <- p_matrix_cycle(p_matrix, age, j - 1,
+      p_matrix <- p_matrix_cycle(age, j - 1,
                                  tpProg = tpProg(),
                                  tpDcm = tpDcm(),
                                  effect = effect())
