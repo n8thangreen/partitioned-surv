@@ -17,8 +17,8 @@ p_mortality_williams <- function(age, ...) {
 
 #' functional data analysis
 #' 
-p_mortality_fda <- function(age, year, baseyear = 2001) {
+p_mortality_fda <- function(age, year) {
   dat <- read.delim(here::here("data/"))
   
-  dat[year - baseyear + 1, as.character(age)]
+  dat[dat$year == year, as.character(age)]
 }

@@ -12,7 +12,6 @@ ce_markov <- function(start_pop,
                       t_names = NULL) {
   
   n_states <- length(start_pop)
-  n_treat <- dim(p_matrix)[3]
   
   pop <- array(data = NA,
                dim = c(n_states, n_cycles, n_treat),
@@ -49,7 +48,6 @@ ce_markov <- function(start_pop,
     
     for (j in 2:n_cycles) {
       
-      # difference from point estimate case
       # pass in functions for random sample
       # rather than fixed values
       p_matrix <- p_matrix_cycle(age, j - 1,
@@ -58,7 +56,7 @@ ce_markov <- function(start_pop,
                                  tpDcm = tpDcm(),
                                  effect = effect())
       
-      # Matrix multiplication
+      # matrix multiplication
       pop[, cycle = j, treatment = i] <-
         pop[, cycle = j - 1, treatment = i] %*% p_matrix[, , treatment = i]
       
