@@ -1,4 +1,5 @@
 
+# partitioned survival model
 # example 
 # from Williams (2016, 2017)
 

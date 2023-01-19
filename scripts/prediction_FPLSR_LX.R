@@ -14,7 +14,7 @@ library(MLmetrics)
 library(partitionedsurv)
 
 
-df <- fread(file = glue({path},'/Data/data.txt'))
+df <- fread(file = here::here('data/data.txt'))
 df[which(df$Age=='110+'), 2] <- 110
 
 
