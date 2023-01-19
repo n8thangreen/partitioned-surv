@@ -1,12 +1,21 @@
-rm(list=ls())
-library(fda); library(ftsa); library(fpcb); library(glue)
-library(dplyr); library(data.table); library(MLmetrics)
 
-path = '/Users/nico/OneDrive - University College London/FDA-partitioned-surv/'
-source(glue({path},'/scripts/aux_functions.R'))
+#
+#
+#
+
+library(fda)
+library(ftsa)
+library(fpcb)
+library(glue)
+library(dplyr)
+library(data.table)
+library(MLmetrics)
+
+library(partitionedsurv)
+
 
 df <- fread(file = glue({path},'/Data/data.txt'))
-df[which(df$Age=='110+'),2]=110
+df[which(df$Age=='110+'), 2] <- 110
 
 
 ############################################################
@@ -17,42 +26,43 @@ lx <- dcast(df, factor(Age, levels = unique(df$Age)) ~ factor(Year, levels = uni
             value.var = 'lx')
 
 lx <- lx[,-1]
-lx = t(lx)
-Age = unique(df$Age)
+lx <- t(lx)
+Age <- unique(df$Age)
 
 colnames(lx) <- as.character(0:110)
 rownames(lx) <- as.character(1922:2020)
 
 ##### Model for mx ######
-data = lx
+data <- lx
 par(mfrow=c(1,1))
 matplot(t(data),type='l', ylab = '1+log(mx)',xlab ='Age', cex.lab = 1.5, col='gray')
 
-N = nrow(data); p = ncol(data)
-t = seq(0, 1,length.out = p) 
+N <- nrow(data)
+p <- ncol(data)
+t <- seq(0, 1, length.out = p) 
 npc <- 2:30
 
 ########### training - validation and testing sets ###########
-train<-0.8; valid<-0.2
+train <- 0.8
+valid <- 0.2
 
 ########################### MACRO ESPERIMENT ###########################
 
 # TRAINING DATA SETS
-data.train  <- data[1:round(N*(train+valid)),] # datos para entrenar y validar
-htrain      <- round(N*valid) # horizonte de prediccion para validar
-n           <- dim(data.train)[1] # cantidad de curvas para entrenar y validar
-ntrain      <- n-htrain # cantidad de curvas para entrenar
-RMSE.fplsr <- matrix(0,htrain,length(npc))
+data.train  <- data[1:round(N*(train+valid)), ] # datos para entrenar y validar
+htrain      <- round(N*valid)                   # horizonte de prediccion para validar
+n           <- dim(data.train)[1]               # cantidad de curvas para entrenar y validar
+ntrain      <- n-htrain                         # cantidad de curvas para entrenar
+RMSE.fplsr  <- matrix(0,htrain,length(npc))
 
 for (k in (ntrain+1):n) {
-  
-  for (j in 1:length(npc)){
+  for (j in 1:length(npc)) {
     
     #### modelo y prediccion fplsr
-    dataset<- rainbow::fts(y=t(data[1:(k-1), ]),x=t)
+    dataset <- rainbow::fts(y=t(data[1:(k-1), ]),x=t)
     modelo.FPLSR  <- ftsa::fplsr(data = dataset,order = npc[j], interval = FALSE)
     predict_fplsr <- modelo.FPLSR$Ypred$y
-    RMSE.fplsr[k-ntrain,j]  <- MLmetrics::RMSE(predict_fplsr,data[k, ])
+    RMSE.fplsr[k-ntrain,j] <- MLmetrics::RMSE(predict_fplsr,data[k, ])
   }
   print(paste0('~~~~~~~~~~~N+',k-ntrain,' validation step~~~~~~~~~~~'))
 }
@@ -60,9 +70,10 @@ for (k in (ntrain+1):n) {
 print('~~~~~~ENTRENAMIENTO COMPLETADO~~~~~~')
 
 # hiperparameters FPLSR
-av.RMSE.fplsr<-colMeans(RMSE.fplsr)
-kn.fplsr<-npc[which.min(av.RMSE.fplsr)]
+av.RMSE.fplsr <- colMeans(RMSE.fplsr)
+kn.fplsr <- npc[which.min(av.RMSE.fplsr)]
 kn.fplsr <- 4
+
 par(mar=c(5,5,3,3))
 plot(npc,av.RMSE.fplsr, xlab='Components', ylab='RMSEP', pch = 19, col= 'slategray',
      bty='n', xaxt = 'n', cex.lab = 1.5, cex.axis = 1.25)
@@ -74,11 +85,11 @@ mtext(text = paste0('NC = ',kn.fplsr), side=3,line=-2, at =which.min(av.RMSE.fpl
 
 ############ OUT OF THE SAMPLE FORECAST ##############
 
-h = 5
+h <- 5
 os_fplsr <- matrix(0,h,length(t))
 fplsr.data <- data
-for (k in (N+1):(N+h)){
-  
+
+for (k in (N+1):(N+h)) {
   #### modelo y prediccion FPLSR
   dataset<- rainbow::fts(y=t(fplsr.data),x=t)
   modelo.FPLSR   <- ftsa::fplsr(data = dataset,order =kn.fplsr, interval = FALSE)
@@ -88,10 +99,10 @@ for (k in (N+1):(N+h)){
 }
   
 h.years <- (as.numeric(rownames(data)[length(rownames(data))])+1):(as.numeric(rownames(data)[length(rownames(data))])+h)
-colnames(fplsr.data)[(N+1):(N+h)]<-h.years
-dataset<- rainbow::fts(y=t(fplsr.data[(N+1):(N+h),]),x=t)
+colnames(fplsr.data)[(N+1):(N+h)] <- h.years
+dataset <- rainbow::fts(y=t(fplsr.data[(N+1):(N+h),]),x=t)
 
-rownames(fplsr.data)<-NULL
+rownames(fplsr.data) <- NULL
 write.table(fplsr.data, file = paste0(path,'Data/lx_',h.years[1],'-',h.years[length(h.years)],'.txt'))
 
 ############ The End ! #################
