@@ -1,6 +1,8 @@
 
 # Markov model
 
+library(dplyr)
+
 t_names <- c("without_drug", "with_drug")
 n_treatments <- length(t_names)
 
@@ -63,7 +65,7 @@ trans_c_matrix <- function() {
                          to = s_names))
 }
 
-n_trials <- 500
+n_trials <- 100
 
 costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
@@ -71,9 +73,12 @@ qalys <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
 
 for (i in 1:n_trials) {
+  print(glue::glue("trial number: {i}"))
   ce_res <- ce_markov(start_pop = c(n_cohort, 0, 0),
                       n_treat = 2,
-                      p_mortality_williams,
+                      # p_mortality_wide(),
+                      p_mortality_long(),
+                      # p_mortality_williams,
                       state_c_matrix(),
                       trans_c_matrix(),
                       state_q_matrix())
@@ -91,7 +96,7 @@ q_incr <- qalys[, "with_drug"] - qalys[, "without_drug"]
 
 wtp <- 30000
 
-plot(x = q_incr_psa/n_cohort, y = c_incr_psa/n_cohort,
+plot(x = q_incr/n_cohort, y = c_incr/n_cohort,
      xlim = c(0, 2),
      ylim = c(0, 15e3),
      pch = 16, cex = 1.2,
@@ -99,7 +104,7 @@ plot(x = q_incr_psa/n_cohort, y = c_incr_psa/n_cohort,
      xlab = "QALY difference",
      ylab = paste0("Cost difference (", enc2utf8("\u00A3"), ")"),
      frame.plot = FALSE)
-points(x = q_incr/n_cohort, y = c_incr/n_cohort,
+points(x = mean(q_incr, na.rm=T)/n_cohort, y = mean(c_incr, na.rm=T)/n_cohort,
        col = "red", pch = 16, cex = 1.5)
 abline(a = 0, b = wtp, lwd = 2) # Willingness-to-pay threshold
 

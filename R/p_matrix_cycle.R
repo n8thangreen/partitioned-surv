@@ -3,10 +3,9 @@ p_matrix_cycle <- function(age, cycle,
                            p_mortality,
                            tpProg = 0.01,
                            tpDcm = 0.15,
-                           effect = 0.5,
-                           baseyear = 1) {
+                           effect = 0.5) {
   
-  tpDn <- p_mortality(age, baseyear + cycle - 1)
+  tpDn <- p_mortality(age)
   
   state_names <- c("Asymptomatic_disease", "Progressive_disease", "Dead")
   drug_names <- c("without_drug", "with_drug")

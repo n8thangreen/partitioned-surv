@@ -1,4 +1,5 @@
 
+#' probability of death look-up
 #' from Williams paper
 #'
 p_mortality_williams <- function(age, ...) {
@@ -15,10 +16,33 @@ p_mortality_williams <- function(age, ...) {
 }
 
 
-#' functional data analysis
+#' probability of death wide look-up table
 #' 
-p_mortality_fda <- function(age, year) {
-  dat <- read.delim(here::here("data/"))
+#' to use with functional data analysis
+#' 
+p_mortality_wide <- function(filename = "tpDn_wide.RData",
+                             baseyear = NA) {
+  load(here::here(glue::glue("data/{filename}")))
+    
+  if (is.na(baseyear)) baseyear <- 1
+  dat_yr <<- dat[as.character(baseyear), ]
   
-  dat[dat$year == year, as.character(age)]
+  function(age)
+    dat_yr[as.character(age)]
+}
+
+
+#' probability of death long look-up table
+#' 
+p_mortality_long <- function(filename = "tpDn_long.RData",
+                             baseyear = NA) {
+  load(here::here(glue::glue("data/{filename}")))
+  year_included <<- "year" %in% names(dat)
+  
+  function (age_yr) {
+    if (year_included)
+      return(dplyr::filter(dat, year == baseyear, age == age_yr)$tpDn)
+    else
+      return(dplyr::filter(dat, age == age_yr)$tpDn)
+  }
 }
