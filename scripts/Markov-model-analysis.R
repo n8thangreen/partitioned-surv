@@ -1,5 +1,6 @@
 
-# Markov model
+# Markov model analysis
+
 
 library(dplyr)
 
@@ -10,10 +11,10 @@ s_names  <- c("Asymptomatic_disease", "Progressive_disease", "Dead")
 n_states <- length(s_names)
 
 n_cohort <- 1000
-n_cycles <- 46
-Initial_age <- 55
+n_cycles <- 20
+Initial_age <- 80
 
-effect <- 0.5
+# effect <- 0.1
 
 cAsymp <- 500; cDeath <- 1000; cProg <- 3000
 cDrug <- 1000
@@ -28,11 +29,16 @@ cAsymp <- function() rnorm(1, 500, 127.55)
 cDeath <- function() rnorm(1, 1000, 255.11)
 cDrug  <- function() rnorm(1, 1000, 102.04)
 cProg  <- function() rnorm(1, 3000, 510.21)
-effect <- function() rnorm(1, 0.5, 0.051)
-tpDcm  <- function() rbeta(1, 29, 167)
+
+# tpDcm  <- function() rbeta(1, 29, 167)
+tpDcm  <- function() rbeta(1, 1, 167)
+
 tpProg <- function() rbeta(1, 15, 1506)
+
 uAsymp <- function() rbeta(1, 69, 4)
 uProg  <- function() rbeta(1, 24, 8)
+
+effect <- function() rnorm(1, 0.5, 0.051)
 
 
 # Define cost and QALYs as functions
@@ -65,7 +71,7 @@ trans_c_matrix <- function() {
                          to = s_names))
 }
 
-n_trials <- 100
+n_trials <- 500
 
 costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
@@ -76,8 +82,10 @@ for (i in 1:n_trials) {
   print(glue::glue("trial number: {i}"))
   ce_res <- ce_markov(start_pop = c(n_cohort, 0, 0),
                       n_treat = 2,
-                      # p_mortality_wide(),
-                      p_mortality_long(),
+                      n_cycles = n_cycles, 
+                      init_age = Initial_age,
+                      p_mortality_wide(filename = "fda_tpDn_wide.RData"),
+                      # p_mortality_long(),
                       # p_mortality_williams,
                       state_c_matrix(),
                       trans_c_matrix(),
@@ -88,23 +96,25 @@ for (i in 1:n_trials) {
 }
 
 
-## Plot results 
+########
+# plots
 
-# incremental costs and QALYs of with_drug vs to without_drug
 c_incr <- costs[, "with_drug"] - costs[, "without_drug"]
 q_incr <- qalys[, "with_drug"] - qalys[, "without_drug"]
 
 wtp <- 30000
 
 plot(x = q_incr/n_cohort, y = c_incr/n_cohort,
-     xlim = c(0, 2),
-     ylim = c(0, 15e3),
+     xlim = c(0, 0.5),  # 80 y/o
+     # xlim = c(0, 2),
+     ylim = c(0, 5e3),  # 80 y/o
+     # ylim = c(0, 15e3),
      pch = 16, cex = 1.2,
      col = "grey",
      xlab = "QALY difference",
      ylab = paste0("Cost difference (", enc2utf8("\u00A3"), ")"),
      frame.plot = FALSE)
-points(x = mean(q_incr, na.rm=T)/n_cohort, y = mean(c_incr, na.rm=T)/n_cohort,
+points(x = mean(q_incr, na.rm = TRUE)/n_cohort, y = mean(c_incr, na.rm = TRUE)/n_cohort,
        col = "red", pch = 16, cex = 1.5)
-abline(a = 0, b = wtp, lwd = 2) # Willingness-to-pay threshold
+abline(a = 0, b = wtp, lwd = 2)  # willingness-to-pay threshold
 

@@ -4,19 +4,18 @@
 \alias{partition_surv}
 \title{Fit a partitioned survival model}
 \usage{
-partition_surv(fit_pfs, fit_os, time = NULL, ...)
+partition_surv(..., time = NULL)
 }
 \arguments{
-\item{fit_pfs}{flexsurvreg obj fitting pfs}
-
-\item{fit_os}{flexsurvreg obj fitting os}
+\item{...}{Fitted flexsurvreg obj}
 
 \item{time}{numeric vector of time to estimate probabilities}
 }
 \value{
-list w/ one entry of a data frame w/ probabilities
-associated w/ stable ,prog and dead.
+data frame of times and probabilities for each state
 }
 \description{
-Fit a partitioned survival model
+order of fit object is from top to bottom i.e.
+least nested survival curve to most e.g.
+OS, PFS
 }
