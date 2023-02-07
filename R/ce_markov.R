@@ -8,6 +8,7 @@ ce_markov <- function(start_pop,
                       state_q_matrix,
                       n_cycles = 46,
                       init_age = 55,
+                      lambda = 0.5,
                       s_names = NULL,
                       t_names = NULL) {
   
@@ -54,7 +55,8 @@ ce_markov <- function(start_pop,
                                  p_mortality,
                                  tpProg = tpProg(),
                                  tpDcm = tpDcm(),
-                                 effect = effect())
+                                 effect = effect(),
+                                 lambda = lambda)
       
       # matrix multiplication
       pop[, cycle = j, treatment = i] <-

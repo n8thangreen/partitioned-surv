@@ -84,6 +84,7 @@ for (i in 1:n_trials) {
                       n_treat = 2,
                       n_cycles = n_cycles, 
                       init_age = Initial_age,
+                      lambda = 0.5,
                       p_mortality_wide(filename = "fda_tpDn_wide.RData"),
                       # p_mortality_long(),
                       # p_mortality_williams,
