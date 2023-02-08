@@ -6,6 +6,7 @@ p_matrix_cycle <- function(age, cycle,
                            effect = 0.5,
                            lambda = 0.5) {
   
+  stopifnot(lambda >= 0 && lambda <= 1)
   tpDn_williams <- p_mortality_williams(age)
   tpDn <- p_mortality(age)
   tpDn_diff <- tpDn_williams - tpDn
@@ -15,7 +16,7 @@ p_matrix_cycle <- function(age, cycle,
   
   p_matrix <- array(0, dim = c(3,3,2),
                     dimnames = list(state_names, state_names, drug_names))
-  
+
   # Matrix containing transition probabilities for without_drug
   p_matrix["Asymptomatic_disease", "Progressive_disease", "without_drug"] <- tpProg*cycle + lambda*tpDn_diff
   p_matrix["Asymptomatic_disease", "Dead", "without_drug"] <- tpDn

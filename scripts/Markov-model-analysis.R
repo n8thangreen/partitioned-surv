@@ -71,7 +71,7 @@ trans_c_matrix <- function() {
                          to = s_names))
 }
 
-n_trials <- 500
+n_trials <- 400
 
 costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
@@ -84,10 +84,11 @@ for (i in 1:n_trials) {
                       n_treat = 2,
                       n_cycles = n_cycles, 
                       init_age = Initial_age,
-                      lambda = 0.5,
-                      p_mortality_wide(filename = "fda_tpDn_wide.RData"),
+                      lambda = 0.1,
+                      # p_mortality_wide(filename = "fda_tpDn_wide.RData",
+                      #                  baseyear = 2041),
                       # p_mortality_long(),
-                      # p_mortality_williams,
+                      p_mortality_williams,
                       state_c_matrix(),
                       trans_c_matrix(),
                       state_q_matrix())
@@ -105,11 +106,11 @@ q_incr <- qalys[, "with_drug"] - qalys[, "without_drug"]
 
 wtp <- 30000
 
-plot(x = q_incr/n_cohort, y = c_incr/n_cohort,
-     xlim = c(0, 0.5),  # 80 y/o
-     # xlim = c(0, 2),
-     ylim = c(0, 5e3),  # 80 y/o
-     # ylim = c(0, 15e3),
+points(x = q_incr/n_cohort, y = c_incr/n_cohort, col = "blue",
+     # xlim = c(0, 1),  # 80 y/o
+     # # xlim = c(0, 2),
+     # ylim = c(0, 8e3),  # 80 y/o
+     # # ylim = c(0, 15e3),
      pch = 16, cex = 1.2,
      col = "grey",
      xlab = "QALY difference",

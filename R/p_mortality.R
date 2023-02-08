@@ -32,10 +32,11 @@ p_mortality_wide <- function(filename = "tpDn_wide.RData",
   load(here::here(glue::glue("data/{filename}")))
     
   if (is.na(baseyear)) baseyear <- 1
+  
   dat_yr <<- dat[as.character(baseyear), ]
   
   function(age)
-    dat_yr[as.character(age)]
+    as.numeric(dat_yr[as.character(age)])
 }
 
 
