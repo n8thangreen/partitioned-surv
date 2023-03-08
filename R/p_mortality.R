@@ -28,13 +28,34 @@ p_mortality_williams <- function(age, ...) {
 #' @export
 #' 
 p_mortality_wide <- function(filename = "tpDn_wide.RData",
+                             filename_upper = NA,
+                             filename_lower = NA,
                              baseyear = NA) {
-  load(here::here(glue::glue("data/{filename}")))
-    
-  if (is.na(baseyear)) baseyear <- 1
   
+  if (is.na(baseyear)) baseyear <- 1
+
+  load(here::here(glue::glue("data/{filename}")))
   dat_yr <<- dat[as.character(baseyear), ]
   
+  # sample probability
+  if (!is.na(filename_upper) && !is.na(filename_lower)) {
+    load(here::here(glue::glue("data/{filename_upper}")))
+    dat_upper <<- dat[as.character(baseyear), ]
+    
+    load(here::here(glue::glue("data/{filename_lower}")))
+    dat_lower <<- dat[as.character(baseyear), ]
+    
+    return(
+      function(age) {
+        upper <- as.numeric(dat_upper[as.character(age)])
+        mu <- as.numeric(dat_yr[as.character(age)])
+        stdev <- (upper - mu)/1.96
+        s <- rnorm(1, mu, stdev)
+        min(1, max(0, s))
+      })
+  }
+  
+  # point value
   function(age)
     as.numeric(dat_yr[as.character(age)])
 }

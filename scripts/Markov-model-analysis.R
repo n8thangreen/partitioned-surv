@@ -77,6 +77,10 @@ costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
 qalys <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
 
+data_filename <- "fda_tpDn_wide_2041.RData"
+# data_filename <- "fda_tpDn_lower_2041.RData"
+# data_filename <- "fda_tpDn_upper_2041.RData"
+
 for (i in 1:n_trials) {
   print(glue::glue("trial number: {i}"))
   ce_res <- ce_markov(start_pop = c(n_cohort, 0, 0),
@@ -84,7 +88,7 @@ for (i in 1:n_trials) {
                       n_cycles = n_cycles, 
                       init_age = Initial_age,
                       lambda = 0.1,
-                      # p_mortality_wide(filename = "fda_tpDn_wide_2041.RData",
+                      # p_mortality_wide(filename = data_filename,
                       #                  baseyear = 2041),
                       # p_mortality_long(),
                       p_mortality_williams,    #2016
