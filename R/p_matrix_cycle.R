@@ -1,4 +1,21 @@
 
+#' Probability matrix per cycle
+#'
+#' @param age 
+#' @param cycle 
+#' @param p_mortality Function
+#' @param tpProg Probability
+#' @param tpDcm Probability
+#' @param effect Impact of drug intervention. Proportion reduction in Asymptomatic
+#'    disease to Progressive disease transition probability.
+#' @param lambda Proportion to Progressive disease. How to redistribute individuals
+#'    who no longer transition to death when changing from Williams probabilities
+#'    to alternative. They can either go to Progressive disease or stay in
+#'    Asymptomatic disease. 0<= lambda <= 1.
+#'
+#' @return
+#' @export
+#'
 p_matrix_cycle <- function(age, cycle,
                            p_mortality,
                            tpProg = 0.01,

@@ -24,7 +24,6 @@ tpDcm <- 0.15; tpProg <- 0.01
 
 tpDn <- 0.0379  # over 65 year old
 
-
 cAsymp <- function() rnorm(1, 500, 127.55)
 cDeath <- function() rnorm(1, 1000, 255.11)
 cDrug  <- function() rnorm(1, 1000, 102.04)
@@ -85,7 +84,7 @@ for (i in 1:n_trials) {
                       n_cycles = n_cycles, 
                       init_age = Initial_age,
                       lambda = 0.1,
-                      # p_mortality_wide(filename = "fda_tpDn_wide.RData",
+                      # p_mortality_wide(filename = "fda_tpDn_wide_2041.RData",
                       #                  baseyear = 2041),
                       # p_mortality_long(),
                       p_mortality_williams,    #2016
@@ -106,13 +105,13 @@ q_incr <- qalys[, "with_drug"] - qalys[, "without_drug"]
 
 wtp <- 30000
 
-points(x = q_incr/n_cohort, y = c_incr/n_cohort, col = "blue",
+plot(x = q_incr/n_cohort, y = c_incr/n_cohort, col = "blue",
      # xlim = c(0, 1),  # 80 y/o
      # # xlim = c(0, 2),
      # ylim = c(0, 8e3),  # 80 y/o
      # # ylim = c(0, 15e3),
      pch = 16, cex = 1.2,
-     col = "grey",
+     colour = "grey",
      xlab = "QALY difference",
      ylab = paste0("Cost difference (", enc2utf8("\u00A3"), ")"),
      frame.plot = FALSE)

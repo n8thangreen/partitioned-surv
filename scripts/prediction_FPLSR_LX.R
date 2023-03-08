@@ -19,8 +19,7 @@ df[which(df$Age=='110+'), 2] <- 110
 
 
 ############################################################
-####################### MODEL FOR lx #######################
-############################################################
+# MODEL FOR lx 
 
 lx <- dcast(df, factor(Age, levels = unique(df$Age)) ~ factor(Year, levels = unique(df$Year)), 
             value.var = 'lx')
@@ -60,7 +59,7 @@ for (k in (ntrain+1):n) {
     
     #### modelo y prediccion fplsr
     dataset <- rainbow::fts(y=t(data[1:(k-1), ]),x=t)
-    modelo.FPLSR  <- ftsa::fplsr(data = dataset,order = npc[j], interval = FALSE)
+    modelo.FPLSR <- ftsa::fplsr(data = dataset,order = npc[j], interval = FALSE)
     predict_fplsr <- modelo.FPLSR$Ypred$y
     RMSE.fplsr[k-ntrain,j] <- MLmetrics::RMSE(predict_fplsr,data[k, ])
   }
@@ -91,7 +90,7 @@ fplsr.data <- data
 
 for (k in (N+1):(N+h)) {
   #### modelo y prediccion FPLSR
-  dataset<- rainbow::fts(y=t(fplsr.data),x=t)
+  dataset <- rainbow::fts(y=t(fplsr.data),x=t)
   modelo.FPLSR   <- ftsa::fplsr(data = dataset,order =kn.fplsr, interval = FALSE)
   os_fplsr.aux   <- modelo.FPLSR$Ypred$y
   os_fplsr[k-N,] <- os_fplsr.aux
@@ -105,7 +104,6 @@ dataset <- rainbow::fts(y=t(fplsr.data[(N+1):(N+h),]),x=t)
 rownames(fplsr.data) <- NULL
 write.table(fplsr.data, file = paste0(path,'Data/lx_',h.years[1],'-',h.years[length(h.years)],'.txt'))
 
-############ The End ! #################
 
 pdf(file = paste0(path,"FTS-pred.pdf"),width=8,height=6,paper='special')
 par(mfrow=c(1,1))

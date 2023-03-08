@@ -1,4 +1,23 @@
 
+#' Cost-effectiveness Markov model
+#'
+#' @param start_pop 
+#' @param n_treat 
+#' @param p_mortality 
+#' @param state_c_matrix 
+#' @param trans_c_matrix 
+#' @param state_q_matrix 
+#' @param n_cycles 
+#' @param init_age 
+#' @param lambda Proportion to Progressive disease. How to redistribute individuals
+#'    who no longer transition to death when changing from Williams probabilities
+#'    to alternative. They can either go to Progressive disease or stay in
+#'    Asymptomatic disease. 0<= lambda <= 1.
+#' @param s_names 
+#' @param t_names 
+#'
+#' @return
+#' @export
 #'
 ce_markov <- function(start_pop,
                       n_treat,

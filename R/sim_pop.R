@@ -1,3 +1,5 @@
+
+#'
 sim_pop <- function(n_cycles, age,
                     trans_c_matrix,
                     p_matrix, pop, trans, i) {
