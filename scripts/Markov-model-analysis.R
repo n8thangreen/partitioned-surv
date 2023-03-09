@@ -12,7 +12,7 @@ n_states <- length(s_names)
 
 n_cohort <- 1000
 n_cycles <- 20
-Initial_age <- 80
+Initial_age <- 50
 
 # effect <- 0.1
 
@@ -77,6 +77,7 @@ costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
 qalys <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
 
+# mortality point values
 data_filename <- "fda_tpDn_wide_2041.RData"
 # data_filename <- "fda_tpDn_lower_2041.RData"
 # data_filename <- "fda_tpDn_upper_2041.RData"
@@ -87,11 +88,14 @@ for (i in 1:n_trials) {
                       n_treat = 2,
                       n_cycles = n_cycles, 
                       init_age = Initial_age,
-                      lambda = 0.1,
-                      # p_mortality_wide(filename = data_filename,
+                      lambda = 0,
+                      # p_mortality_wide(filename = data_filename,                    # mortality point values
                       #                  baseyear = 2041),
                       # p_mortality_long(),
-                      p_mortality_williams,    #2016
+                      # p_mortality_williams,    # 2016
+                      p_mortality_wide(filename = "fda_tpDn_wide_2041.RData",         # mortality prob uncertainty
+                                       filename_upper = "fda_tpDn_upper_2041.RData",
+                                       filename_lower = "fda_tpDn_lower_2041.RData"),
                       state_c_matrix(),
                       trans_c_matrix(),
                       state_q_matrix())
@@ -110,10 +114,10 @@ q_incr <- qalys[, "with_drug"] - qalys[, "without_drug"]
 wtp <- 30000
 
 plot(x = q_incr/n_cohort, y = c_incr/n_cohort, col = "blue",
-     # xlim = c(0, 1),  # 80 y/o
-     # # xlim = c(0, 2),
-     # ylim = c(0, 8e3),  # 80 y/o
-     # # ylim = c(0, 15e3),
+     xlim = c(-1, 2),
+     # xlim = c(-0.5, 1),  # 80 y/o
+     ylim = c(0, 15e3),
+     # ylim = c(0, 10e3),  # 80 y/o
      pch = 16, cex = 1.2,
      colour = "grey",
      xlab = "QALY difference",

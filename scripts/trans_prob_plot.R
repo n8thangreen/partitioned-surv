@@ -3,6 +3,9 @@
 # against age for different life tables
 
 
+library(dplyr)
+
+
 # williams paper
 load(here::here("data", "tpDn_wide.RData"))
 
@@ -23,7 +26,7 @@ lifetable <- read.delim(file = "data/lifetable.txt", sep = "",
 lt_tpDn <- lifetable$qx
 
 # png(filename = here::here("plots", "trans_prob_plot.png"))
-matplot(t(fda_tpDn_wide[c("1922", "1991", "2016", "2041"), ]))
+matplot(t(fda_tpDn_wide[c("1922", "2016", "2041"), ]), type = "l")
 lines(1:100, dat, type = "o")
 lines(0:110, lt_tpDn, type = "o", col = "grey")
 # dev.off()
@@ -39,10 +42,10 @@ save(dat, file = "data/fda_tpDn_wide_2041.RData")
 # CI bounds
 
 fda_mx_lower <-
-  read.delim(here::here("data", "mx_lower_bounds.txt"), sep = " ")
+  read.delim(here::here("data", "mx_lower_bounds.txt"), sep = " ", check.names = FALSE)
 
 fda_mx_upper <-
-  read.delim(here::here("data", "mx_upper_bounds.txt"), sep = " ")
+  read.delim(here::here("data", "mx_upper_bounds.txt"), sep = " ", check.names = FALSE)
 
 fda_tpDn_upper <- 1 - exp(-fda_mx_upper)
 fda_tpDn_lower <- 1 - exp(-fda_mx_lower)

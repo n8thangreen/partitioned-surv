@@ -32,18 +32,21 @@ p_mortality_wide <- function(filename = "tpDn_wide.RData",
                              filename_lower = NA,
                              baseyear = NA) {
   
-  if (is.na(baseyear)) baseyear <- 1
-
+  row_id <- if (!is.na(baseyear)) {
+    as.character(baseyear)
+  } else {1}
+  
   load(here::here(glue::glue("data/{filename}")))
-  dat_yr <<- dat[as.character(baseyear), ]
+  dat_yr <<- dat[row_id, ]
   
   # sample probability
   if (!is.na(filename_upper) && !is.na(filename_lower)) {
     load(here::here(glue::glue("data/{filename_upper}")))
-    dat_upper <<- dat[as.character(baseyear), ]
+    
+    dat_upper <<- dat[row_id, ]
     
     load(here::here(glue::glue("data/{filename_lower}")))
-    dat_lower <<- dat[as.character(baseyear), ]
+    dat_lower <<- dat[row_id, ]
     
     return(
       function(age) {
