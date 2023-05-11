@@ -22,6 +22,11 @@ n_trials <- 400
 
 all_pars <- read.csv(file = "data/dsa_inputs.csv")
 
+costs <- list()
+qalys <- list()
+ce_res <- list()
+
+# deterministic scenario analysis
 
 for (j in 1:nrow(all_pars)) {
   
@@ -46,7 +51,6 @@ for (j in 1:nrow(all_pars)) {
   # uProg  <- function() rbeta(1, 24, 8)
   
   effect <- function() rnorm(1, 0.5, 0.051)
-  
   
   # Define cost and QALYs as functions
   
@@ -78,10 +82,9 @@ for (j in 1:nrow(all_pars)) {
                            to = s_names))
   }
   
-  
-  costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
+  costs[[j]] <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                   dimnames = list(NULL, t_names))
-  qalys <- matrix(NA, nrow = n_trials, ncol = n_treatments,
+  qalys[[j]] <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                   dimnames = list(NULL, t_names))
   
   # mortality point values
@@ -91,7 +94,7 @@ for (j in 1:nrow(all_pars)) {
   
   for (i in 1:n_trials) {
     print(glue::glue("trial number: {i}"))
-    ce_res <- ce_markov(start_pop = c(n_cohort, 0, 0),
+    ce_res[[j]] <- ce_markov(start_pop = c(n_cohort, 0, 0),
                         n_treat = 2,
                         n_cycles = n_cycles, 
                         init_age = Initial_age,
@@ -107,8 +110,8 @@ for (j in 1:nrow(all_pars)) {
                         trans_c_matrix(),
                         state_q_matrix())
     
-    costs[i, ] <- ce_res$total_costs
-    qalys[i, ] <- ce_res$total_QALYs
+    costs[[j]][i, ] <- ce_res$total_costs
+    qalys[[j]][i, ] <- ce_res$total_QALYs
   }
 }
 
@@ -126,7 +129,6 @@ plot(x = q_incr/n_cohort, y = c_incr/n_cohort, col = "blue",
      ylim = c(0, 15e3),
      # ylim = c(0, 10e3),  # 80 y/o
      pch = 16, cex = 1.2,
-     col = "grey",
      xlab = "QALY difference",
      ylab = paste0("Cost difference (", enc2utf8("\u00A3"), ")"),
      frame.plot = FALSE)
