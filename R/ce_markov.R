@@ -16,7 +16,7 @@
 #' @param s_names 
 #' @param t_names 
 #'
-#' @return
+#' @return List
 #' @export
 #'
 ce_markov <- function(start_pop,

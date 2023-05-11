@@ -1,8 +1,10 @@
 
 # Markov model analysis
+# with fda data
 
 
 library(dplyr)
+
 
 t_names <- c("without_drug", "with_drug")
 n_treatments <- length(t_names)
@@ -14,28 +16,29 @@ n_cohort <- 1000
 n_cycles <- 20
 Initial_age <- 50
 
+n_trials <- 400
+
 # effect <- 0.1
 
-cAsymp <- 500; cDeath <- 1000; cProg <- 3000
-cDrug <- 1000
-uAsymp <- 0.95; uProg <- 0.75
-oDr <- 0.06; cDr <- 0.06
-tpDcm <- 0.15; tpProg <- 0.01
+pars <- read.csv(file = "data/dsa_inputs.csv") |> as.list()
 
+# convert fixed value variable to function
+for (x in names(pars)) {
+  eval(parse(text = glue::glue("{x} <- \\() pars${x}")))
+}
+
+oDr <- 0.06; cDr <- 0.06
 tpDn <- 0.0379  # over 65 year old
 
-cAsymp <- function() rnorm(1, 500, 127.55)
-cDeath <- function() rnorm(1, 1000, 255.11)
-cDrug  <- function() rnorm(1, 1000, 102.04)
-cProg  <- function() rnorm(1, 3000, 510.21)
-
-# tpDcm  <- function() rbeta(1, 29, 167)
-tpDcm  <- function() rbeta(1, 1, 167)
-
-tpProg <- function() rbeta(1, 15, 1506)
-
-uAsymp <- function() rbeta(1, 69, 4)
-uProg  <- function() rbeta(1, 24, 8)
+# cAsymp <- function() rnorm(1, 500, 127.55)
+# cDeath <- function() rnorm(1, 1000, 255.11)
+# cProg  <- function() rnorm(1, 3000, 510.21)
+# cDrug  <- function() rnorm(1, 1000, 102.04)
+# # tpDcm  <- function() rbeta(1, 29, 167)
+# tpDcm  <- function() rbeta(1, 1, 167)
+# tpProg <- function() rbeta(1, 15, 1506)
+# uAsymp <- function() rbeta(1, 69, 4)
+# uProg  <- function() rbeta(1, 24, 8)
 
 effect <- function() rnorm(1, 0.5, 0.051)
 
@@ -70,7 +73,6 @@ trans_c_matrix <- function() {
                          to = s_names))
 }
 
-n_trials <- 400
 
 costs <- matrix(NA, nrow = n_trials, ncol = n_treatments,
                 dimnames = list(NULL, t_names))
